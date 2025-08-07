@@ -3,6 +3,12 @@
 // jika DOM terisi oleh data/value
 document.addEventListener('DOMContentLoaded', () => {
 
+    // Membuat tanggal berformat yyyy-mm-dd
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+
     const taskForm = document.getElementById('taskForm');
     const taskManager = new Task();
 
@@ -11,7 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const taskData = {
             taskName: document.getElementById("taskName").value,
-            taskPriority: document.getElementById("taskPriority").value
+            taskPriority: document.getElementById("taskPriority").value,
+            createdAt: `${year}-${month}-${day}`,
         }
 
         const result = taskManager.saveTask(taskData);
