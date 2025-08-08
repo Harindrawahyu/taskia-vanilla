@@ -1,56 +1,58 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // Assuming 'Task' is a class that handles task data (e.g., localStorage)
-    const myTask = new Task();
+document.addEventListener("DOMContentLoaded", () => {
+  // Capital first char
+  function capitalizedFirstChar(str) {
+    if (!str) return str;
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
 
-    const existingTasks = myTask.getTasks();
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    const options = {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    };
 
-    const taskWrapper = document.getElementById('taskWrapper');
-    const taskWrapperEmpty = document.getElementById('taskWrapperEmpty');
+    return date.toLocaleDateString("en-GB", options);
+  }
 
-    // Capital first char
-    function capitalizedFirstChar(str) {
-        if (!str) return str;
-        return str.charAt(0).toUpperCase() + str.slice(1);
-    }
+  const myTasks = new Task();
 
-    function formatDate(dateString) {
-        const date = new Date(dateString);
-        const options = {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric'
-        };
+  const existingTasks = myTasks.getTasks();
 
-        return date.toLocaleDateString('en-GB', options);
-    }
+  const taskWrapper = document.getElementById("taskWrapper");
+  const taskWrapperEmpty = document.getElementById("taskWrapperEmpty");
 
-    // Function to display tasks
-    function displayAllTasks() {
-        // Clear existing tasks to prevent duplicates on re-render
-        taskWrapper.innerHTML = '';
+  // Function to display tasks
+  function displayAllTasks() {
+    // Clear existing tasks to prevent duplicates on re-render
+    taskWrapper.innerHTML = "";
 
-        if (!existingTasks || existingTasks.length === 0) {
-            taskWrapper.classList.add('hidden');
-            taskWrapperEmpty.classList.remove('hidden');
-            console.log("Task tidak tersedia.");
-        } else {
-            taskWrapperEmpty.classList.add('hidden');
-            taskWrapper.classList.remove('hidden');
-            console.log("Task tersedia.");
+    if (!existingTasks || existingTasks.length === 0) {
+      taskWrapper.classList.add("hidden");
+      taskWrapperEmpty.classList.remove("hidden");
+      console.log("Task tidak tersedia.");
+    } else {
+      taskWrapperEmpty.classList.add("hidden");
+      taskWrapper.classList.remove("hidden");
+      console.log("Task tersedia.");
 
-            existingTasks.forEach(task => {
-                const userFriendlyDate = formatDate(task.createdAt);
-                const taskItem = document.createElement('div');
+      existingTasks.forEach((task) => {
+        const userFriendlyDate = formatDate(task.createdAt);
+        const taskItem = document.createElement("div");
 
-                taskItem.className = 'flex justify-between bg-white p-5 w-full rounded-3xl';
-                taskItem.innerHTML = `
+        taskItem.className =
+          "flex justify-between bg-white p-5 w-full rounded-3xl";
+        taskItem.innerHTML = `
                     <div class="task-card flex flex-col gap-5">
                         <div class="flex gap-3 items-center">
                             <div class="w-[50px] h-[50px] flex shrink-0 items-center justify-center bg-[#BDEBFF] rounded-full">
                                 <img src="img/icons/ghost.svg" alt="icon">
                             </div>
                             <div class="flex flex-col">
-                                <p class="font-bold text-lg leading-[27px]">${capitalizedFirstChar(task.taskName)}</p>
+                                <p class="font-bold text-lg leading-[27px]">${capitalizedFirstChar(
+          task.taskName
+        )}</p>
                                 <p class="text-sm leading-[21px] text-taskia-grey">${userFriendlyDate}</p>
                             </div>
                         </div>
@@ -62,8 +64,8 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <p>${task.taskPriority}</p>
                             </div>
 
-                            ${task.isCompleted === false ?
-                        `<div class="flex gap-1 items-center">
+                            ${task.isCompleted === false
+            ? `<div class="flex gap-1 items-center">
                                     <div class="flex shrink-0 w-5 h-5">
                                         <svg width="20" height="21" viewBox="0 0 20 21" fill="none"
                                             xmlns="http://www.w3.org/2000/svg">
@@ -77,8 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                     </div>
                                     <p>In Progress</p>
                                 </div>`
-                        :
-                        `<div class="flex gap-1 items-center text-taskia-green">
+            : `<div class="flex gap-1 items-center text-taskia-green">
                                     <div class="flex shrink-0 w-5 h-5">
                                         <svg width="20" height="21" viewBox="0 0 20 21" fill="none"
                                             xmlns="http://www.w3.org/2000/svg">
@@ -92,20 +93,28 @@ document.addEventListener('DOMContentLoaded', () => {
                                     </div>
                                     <p>Completed</p>
                                 </div>`
-                    } 
+          } 
                         </div>
                     </div>
                     <div class="flex flex-row items-center gap-x-3">
                         <a href="#"
                             class="my-auto font-semibold text-taskia-red border border-taskia-red p-[12px_20px] h-12 rounded-full">Delete</a>
-                        <a href="#"
+                        <a href="#" id="completeTask ${task.id}"
                             class="flex gap-[10px] justify-center items-center text-white p-[12px_20px] h-12 font-semibold bg-gradient-to-b from-[#977FFF] to-[#6F4FFF] rounded-full w-full border border-taskia-background-grey">Complete</a>
                     </div>
                 `;
-                taskWrapper.appendChild(taskItem);
-            });
-        }
-    }
 
-    displayAllTasks();
+        taskWrapper.appendChild(taskItem);
+
+        taskItem
+          .querySelector(`#completeTask-${task.id}`)
+          .addEventListener("click", function (event) {
+            event.preventDefault();
+            myTasks.completeTask(task.id);
+          });
+      });
+    }
+  }
+
+  displayAllTasks();
 });
