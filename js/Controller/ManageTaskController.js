@@ -51,8 +51,8 @@ document.addEventListener("DOMContentLoaded", () => {
                             </div>
                             <div class="flex flex-col">
                                 <p class="font-bold text-lg leading-[27px]">${capitalizedFirstChar(
-                                  task.taskName
-                                )}</p>
+          task.taskName
+        )}</p>
                                 <p class="text-sm leading-[21px] text-taskia-grey">${userFriendlyDate}</p>
                             </div>
                         </div>
@@ -64,9 +64,8 @@ document.addEventListener("DOMContentLoaded", () => {
                                 <p>${task.taskPriority}</p>
                             </div>
 
-                            ${
-                              task.isCompleted === false
-                                ? `<div class="flex gap-1 items-center">
+                            ${task.isCompleted === false
+            ? `<div class="flex gap-1 items-center">
                                     <div class="flex shrink-0 w-5 h-5">
                                         <svg width="20" height="21" viewBox="0 0 20 21" fill="none"
                                             xmlns="http://www.w3.org/2000/svg">
@@ -80,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                     </div>
                                     <p>In Progress</p>
                                 </div>`
-                                : `<div class="flex gap-1 items-center text-taskia-green">
+            : `<div class="flex gap-1 items-center text-taskia-green">
                                     <div class="flex shrink-0 w-5 h-5">
                                         <svg width="20" height="21" viewBox="0 0 20 21" fill="none"
                                             xmlns="http://www.w3.org/2000/svg">
@@ -94,41 +93,50 @@ document.addEventListener("DOMContentLoaded", () => {
                                     </div>
                                     <p>Completed</p>
                                 </div>`
-                            } 
+          } 
                         </div>
                     </div>
                     <div class="flex flex-row items-center gap-x-3">
                         <a href="#" id= "deleteTask-${task.id}"
                             class="my-auto font-semibold text-taskia-red border border-taskia-red p-[12px_20px] h-12 rounded-full">Delete</a>
 
-                        ${
-                          task.isCompleted === false
-                            ? `<a href = "#" id = "completeTask-${task.id}"
-                            class="flex gap-[10px] justify-center items-center text-white p-[12px_20px] h-12 font-semibold bg-gradient-to-b from-[#977FFF] to-[#6F4FFF] rounded-full w-full border border-taskia-background-grey" > Complete</a>`
-                            : `<a href = "#" id = "completeTask-${task.id}"
-                            class="hidden"></a>`
-                        }
+                        ${task.isCompleted === false
+            ? `<a href = "#" id = "completeTask-${task.id}"
+                            class="flex gap-[10px] justify-center items-center text-white p-[12px_20px] h-12 font-semibold bg-gradient-to-b from-[#977FFF] to-[#6F4FFF] rounded-full w-full border border-taskia-background-grey" >Complete</a>`
+            : `<a href = "#" id = "uncompleteTask-${task.id}"
+                            class="flex gap-[10px] justify-center items-center text-black p-[12px_20px] h-12 font-semibold rounded-full w-full border border-taskia-background-grey border border-taskia-black" >Uncomplete</a>`
+          }
                     </div>`;
 
         taskWrapper.appendChild(taskItem);
 
-        taskItem
-          .querySelector(`#completeTask-${task.id}`)
-          .addEventListener("click", function (event) {
+        const completeBtn = taskItem.querySelector(`#completeTask-${task.id}`);
+
+        if (completeBtn) {
+          completeBtn.addEventListener("click", function (event) {
             event.preventDefault();
             myTasks.completeTask(task.id);
             const updateTasks = myTasks.getTasks();
             displayAllTasks(updateTasks);
           });
+        }
 
-        taskItem
-          .querySelector(`#deleteTask-${task.id}`)
-          .addEventListener("click", function (event) {
+        const uncompleteBtn = taskItem.querySelector(`#uncompleteTask-${task.id}`);
+        if (uncompleteBtn) {
+          uncompleteBtn.addEventListener("click", function (event) {
             event.preventDefault();
-            myTasks.deleteTask(task.id);
+            myTasks.uncompleteTask(task.id);
             const updateTasks = myTasks.getTasks();
             displayAllTasks(updateTasks);
           });
+        }
+
+        taskItem.querySelector(`#deleteTask-${task.id}`).addEventListener("click", function (event) {
+          event.preventDefault();
+          myTasks.deleteTask(task.id);
+          const updateTasks = myTasks.getTasks();
+          displayAllTasks(updateTasks);
+        });
       });
     }
   }
